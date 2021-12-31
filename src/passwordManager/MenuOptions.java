@@ -49,4 +49,17 @@ public class MenuOptions {
 			System.out.println(exc);
 		}
 	}
+	
+	public static void clearPasswords() {
+		String clearQuery = "DELETE FROM passwords";
+		
+		try {
+			Connection myDB = LocalDB.getConnection(null, null);
+			PreparedStatement ps = myDB.prepareStatement(clearQuery);
+			
+			ps.executeUpdate();
+		} catch (Exception exc) {
+			System.out.println(exc);
+		}
+	}
 }

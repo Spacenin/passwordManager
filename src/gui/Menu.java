@@ -8,11 +8,18 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class Menu extends JFrame implements ActionListener {
+	JFrame addFrame = new JFrame();
+	JPanel addPanel = new JPanel();
+	JFrame clearFrame = new JFrame();
+	JPanel clearPanel = new JPanel();
 	JPanel panel;
 	JButton add;
 	JButton get;
 	JButton quit;
 	JButton submitAdd;
+	JButton clear;
+	JButton clearYes;
+	JButton clearNo;
 	JPasswordField addPassField;
 	JTextField addUserField;
 	JTextField addUrlField;
@@ -38,12 +45,17 @@ public class Menu extends JFrame implements ActionListener {
 		get.addActionListener(this);
 		get.setBounds(100, 40, 400, 20);
 		
-		quit = new JButton("3. Quit");
+		clear = new JButton("3. Clear all passwords in vault");
+		clear.addActionListener(this);
+		clear.setBounds(100, 60, 400, 20);
+		
+		quit = new JButton("4. Quit");
 		quit.addActionListener(this);
-		quit.setBounds(100, 60, 400, 20);
+		quit.setBounds(100, 80, 400, 20);
 		
 		panel.add(add);
 		panel.add(get);
+		panel.add(clear);
 		panel.add(quit);
 		
 		add(panel);
@@ -75,17 +87,28 @@ public class Menu extends JFrame implements ActionListener {
 			
 			ArrayList<Password> passwords = MenuOptions.getPasswords();
 			
-			for (Password each : passwords) {
-				JLabel getLabel = new JLabel();
+			if (passwords.size() == 0) {
+				JLabel empty = new JLabel();
 				
-				getLabel.setText(num + ". " + each.getName() + ": " + each.getUsername() + ", " + 
-						each.getPassword() + ": " + each.getUrl());
-				getLabel.setBounds(x, y, width, height);
+				empty.setText("There are no passwords currently saved!");
+				empty.setBounds(100, 50, 400, 50);
 				
-				y += 20;
-				num++;
-				
-				getPanel.add(getLabel);
+				getPanel.add(empty);
+			}
+			
+			else {
+				for (Password each : passwords) {
+					JLabel getLabel = new JLabel();
+					
+					getLabel.setText(num + ". " + each.getName() + ": " + each.getUsername() + ", " + 
+							each.getPassword() + ": " + each.getUrl());
+					getLabel.setBounds(x, y, width, height);
+					
+					y += 20;
+					num++;
+					
+					getPanel.add(getLabel);
+				}
 			}
 			
 			getFrame.add(getPanel);
@@ -93,8 +116,6 @@ public class Menu extends JFrame implements ActionListener {
 		}
 		
 		if (e.getSource() == add) {
-			JFrame addFrame = new JFrame();
-			JPanel addPanel = new JPanel();
 			JLabel addLabel1 = new JLabel("Enter the password:");
 			addPassField = new JPasswordField(20);
 			JLabel addLabel2 = new JLabel("Enter the username:");
@@ -147,7 +168,96 @@ public class Menu extends JFrame implements ActionListener {
 			
 			pass = new Password(password, username, url, name);
 			
+			JLabel submitted = new JLabel();
+			submitted.setText("Submitted password " + name + "!");
+			submitted.setBounds(240, 100, 400, 20);
+			
+			JPanel addPanel = new JPanel();
+			JFrame addFrame = new JFrame();
+			
+			addPanel.setLayout(null);
+			addFrame.setSize(640, 480);
+			addFrame.setTitle("Add a Password");
+			addFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+			
+			addPanel.add(submitted);
+			addFrame.add(addPanel);
+			addFrame.setVisible(true);
+			
 			MenuOptions.savePassword(pass);
+			
+			addPassField.setText("");
+			addUserField.setText("");
+			addUrlField.setText("");
+			addNameField.setText("");
+		}
+		
+		if (e.getSource() == clear) {
+			
+			clearPanel.setLayout(null);
+			
+			clearFrame.setSize(640, 480);
+			clearFrame.setTitle("Validation");
+			clearFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+			
+			JLabel clearQ = new JLabel();
+			clearQ.setText("Are you sure you'd like to clear all?");
+			
+			clearYes = new JButton("Yes");
+			clearYes.addActionListener(this);
+			clearNo = new JButton("No");
+			clearNo.addActionListener(this);
+			
+			clearQ.setBounds(200, 100, 400, 50);
+			clearYes.setBounds(200, 150, 100, 50);
+			clearNo.setBounds(300, 150, 100, 50);
+			
+			clearPanel.add(clearQ);
+			clearPanel.add(clearYes);
+			clearPanel.add(clearNo);
+			
+			clearFrame.add(clearPanel);
+			clearFrame.setVisible(true);
+		}
+		
+		if (e.getSource() == clearYes) {
+			MenuOptions.clearPasswords();
+			
+			JLabel clearDone = new JLabel();
+			clearDone.setText("All passwords cleared!");
+			clearDone.setBounds(200, 100, 400, 50);
+			
+			clearPanel = new JPanel();
+			clearFrame = new JFrame();
+			
+			clearPanel.setLayout(null);
+			
+			clearFrame.setSize(640, 480);
+			clearFrame.setTitle("Validation");
+			clearFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+			
+			clearPanel.add(clearDone);
+			clearFrame.add(clearPanel);
+			clearFrame.setVisible(true);
+		}
+		
+		if (e.getSource() == clearNo) {
+			JLabel notClear = new JLabel();
+			notClear.setText("Did not clear passwords!");
+			notClear.setBounds(200, 100, 400, 50);
+			
+			clearPanel = new JPanel();
+			clearFrame = new JFrame();
+			
+			clearPanel.setLayout(null);
+			
+			clearFrame.setSize(640, 480);
+			clearFrame.setTitle("Validation");
+			clearFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+			
+			clearPanel.add(notClear);
+			clearFrame.add(clearPanel);
+			clearFrame.setVisible(true);
 		}
 	}
 }
