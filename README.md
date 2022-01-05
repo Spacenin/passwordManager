@@ -1,2 +1,2 @@
 # passwordManager
-Java password manager application using Swing and MySQL
+Java password manager application using Swing and MySQL.
